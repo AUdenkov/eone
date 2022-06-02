@@ -3,17 +3,16 @@ package controler;
 import error.MyException;
 import model.Profile;
 import model.TypeProfil;
-import sorces.ListProfile;
+import sorces.Connect;
 import sorces.Result;
 
 import java.util.Scanner;
 
 public class Menu {
-    private static ListProfile listProfile;
+
     private static Scanner scannerIn;
 
     public Menu() {
-        listProfile = new ListProfile();
         scannerIn = new Scanner(System.in);
         menuOne();
     }
@@ -24,19 +23,16 @@ public class Menu {
         int num = Integer.parseInt(scannerIn.next());
         switch (num) {
             case 1 -> {
-                if (listProfile.getProfiles().size() != 0) {
-                    menuIn();
-                } else System.out.println("Создайте пользователей");
-                menuOne();
+
             }
             case 2 -> {
-                if (listProfile.getProfiles().size() != 0) {
+//                if (listProfile.getProfiles().size() != 0) {
                     registration(TypeProfil.USER);
-                } else
+//                } else
                     registration(TypeProfil.ADMIN);
             }
             case 3 -> {
-                System.out.println(listProfile.getProfiles());
+//                System.out.println(listProfile.getProfiles());
                 menuOne();
             }
         }
@@ -49,18 +45,6 @@ public class Menu {
         System.out.println("Введите пороль");
         String password = scannerIn.next();
         check(password);
-        for (int i = 0; i < listProfile.getProfiles().size(); i++) {
-            if (listProfile.getProfiles().get(i).getNick().equals(nick)) {
-                if (listProfile.getProfiles().get(i).getPassword().equals(password)) {
-                    System.out.println("Все верно");
-                    Result result = new Result(listProfile.getProfiles().get(i));
-                } else {
-                    System.out.println("password error");
-                }
-            } else {
-                System.out.println("nick error");
-            }
-        }
         menuOne();
     }
 
@@ -84,13 +68,14 @@ public class Menu {
         System.out.println("Введите пороль");
         String password = scannerIn.next();
         check(password);
-        listProfile.addProfile(new Profile(firstName, lastName, nick, age, typeProfil, password));
+        Profile profile = new Profile(firstName, lastName, nick, age, typeProfil, password);
+        Connect.addProfileInDataBase(profile);
         menuOne();
 
     }
 
     public static void menuAdmin() {
-        System.out.println("Полцчить список");
+        System.out.println("Получить список");
         System.out.println("удалить пользователя");
         System.out.println("изменить права полтзователя");
     }

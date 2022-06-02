@@ -19,17 +19,15 @@ public class ConnectionManager {
     private ConnectionManager() {
 
     }
-    public void connectOLD(){
+
+    public static Connection connectOLD() throws SQLException {
         String password = "admin";
         String userName = "postgres";
         String url = "jdbc:postgresql://localhost:5432/postgres";
         Class<Driver> driverClass = Driver.class;
-        try (  var connection = DriverManager.getConnection(url,userName,password)) {
-            System.out.println(connection.getTransactionIsolation());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        return DriverManager.getConnection(url, userName, password);
     }
+
 
     public static Connection open() {
         try {
