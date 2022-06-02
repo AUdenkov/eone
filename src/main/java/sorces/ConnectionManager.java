@@ -2,6 +2,7 @@ package sorces;
 
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
@@ -17,6 +18,17 @@ public class ConnectionManager {
 
     private ConnectionManager() {
 
+    }
+    public void connectOLD(){
+        String password = "admin";
+        String userName = "postgres";
+        String url = "jdbc:postgresql://localhost:5432/postgres";
+        Class<Driver> driverClass = Driver.class;
+        try (  var connection = DriverManager.getConnection(url,userName,password)) {
+            System.out.println(connection.getTransactionIsolation());
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public static Connection open() {

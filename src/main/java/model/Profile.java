@@ -16,7 +16,7 @@ public class Profile {
     public Profile(String firstName, String lastName, String nick, int age, TypeProfil typeProfil, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
-        nick = nick;
+        this.nick = nick;
         this.age = age;
         this.typeProfil = typeProfil;
         this.password = password;
@@ -81,5 +81,17 @@ public class Profile {
     @Override
     public int hashCode() {
         return Objects.hash(firstName, lastName, age, typeProfil, password);
+    }
+
+    @Override
+    public String toString() {
+        return "Profile{" +
+                "firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", nick='" + nick + '\'' +
+                ", age=" + age +
+                ", typeProfil=" + typeProfil +
+                ", password='" + password + '\'' +
+                '}';
     }
 }
