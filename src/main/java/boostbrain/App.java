@@ -16,16 +16,8 @@ public class App {
     private static java.sql.Connection Connection;
 
     public static void main(String[] args) {
-//        Menu menu=new Menu();
-        String password = "admin";
-        String userName = "postgres";
-        String url = "jdbc:postgresql://localhost:5432/postgres";
-        Class<Driver> driverClass = Driver.class;
-        try (  var connection = DriverManager.getConnection(url,userName,password)) {
-            System.out.println(connection.getTransactionIsolation());
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        Menu menu=new Menu();
+
 
 
     }
