@@ -13,6 +13,14 @@ public class Profile {
     public Profile() {
     }
 
+    public Profile(String firstName, String lastName, String nick, int age, TypeProfil typeProfil) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.nick = nick;
+        this.age = age;
+        this.typeProfil = typeProfil;
+    }
+
     public Profile(String firstName, String lastName, String nick, int age, TypeProfil typeProfil, String password) {
         this.firstName = firstName;
         this.lastName = lastName;
@@ -25,6 +33,7 @@ public class Profile {
     public String getNick() {
         return nick;
     }
+
 
     public void setNick(String nick) {
         this.nick = nick;

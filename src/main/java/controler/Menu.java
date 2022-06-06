@@ -23,20 +23,22 @@ public class Menu {
         int num = Integer.parseInt(scannerIn.next());
         switch (num) {
             case 1 -> {
-
+                menuIn();
             }
             case 2 -> {
-//                if (listProfile.getProfiles().size() != 0) {
+                if (Connect.checkUser())
                     registration(TypeProfil.USER);
-//                } else
+                else {
                     registration(TypeProfil.ADMIN);
+                }
             }
             case 3 -> {
-//                System.out.println(listProfile.getProfiles());
+                System.out.println(Connect.getSpisok());
                 menuOne();
             }
         }
     }
+
 
     public static void menuIn() {
         System.out.println("Введите ник");
@@ -45,8 +47,11 @@ public class Menu {
         System.out.println("Введите пороль");
         String password = scannerIn.next();
         check(password);
-        menuOne();
+        if (CheackProfile.cheackProfili(nick, password)) {
+            Result result = new Result(CheackProfile.getProfile());
+        }
     }
+
 
     public static void registration(TypeProfil typeProfil) {
         System.out.println("Введите имя");
@@ -75,9 +80,24 @@ public class Menu {
     }
 
     public static void menuAdmin() {
-        System.out.println("Получить список");
-        System.out.println("удалить пользователя");
-        System.out.println("изменить права полтзователя");
+        System.out.println("1) Получить список");
+        System.out.println("2) удалить пользователя");
+        System.out.println("3) изменить права полтзователя");
+        int x = Integer.parseInt(scannerIn.next());
+        switch (x) {
+            case 1 -> {
+                Connect.getSpisok();
+                menuAdmin();
+            }
+            case 2 -> {
+//                Connect.deleteProfele();
+                menuAdmin();
+            }
+            case 3 -> {
+//                Connect.changeTypeProfile();
+                menuAdmin();
+            }
+        }
     }
 
     public static void menuUser() {
