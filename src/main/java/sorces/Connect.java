@@ -6,10 +6,36 @@ import org.postgresql.util.PSQLException;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 public class Connect {
 
     private Connect() {
+    }
+
+    public static boolean isEmpty() {
+        Connection connection = null;
+        boolean cheack;
+        try {
+            String sql = "SELECT * FROM users.user ";
+            connection = ConnectionManager.connectOLD();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                cheack = false;
+            } else {
+                cheack = true;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return cheack;
     }
 
     public static void addProfileInDataBase(Profile profile) {
@@ -26,10 +52,10 @@ public class Connect {
             statement.setString(6, profile.getPassword());
             try {
                 statement.executeUpdate();
+                System.out.println("Пользователь создан");
             } catch (PSQLException e) {
                 System.out.println("Пользователь с таким именем существует");
             }
-            System.out.println(connection.getTransactionIsolation());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -62,7 +88,6 @@ public class Connect {
                         profile = new Profile(firstName, lastName, nick, age, TypeProfil.USER, password);
                 }
             }
-            System.out.println(connection.getTransactionIsolation());
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
@@ -131,4 +156,52 @@ public class Connect {
         }
         return arrayList;
     }
+
+    public static void deleteProfile(String nick) {
+        Connection connection = null;
+        try {
+            String sql = String.format("DELETE FROM users.user WHERE nick = '%s'", nick);
+            System.out.println(sql);
+            connection = ConnectionManager.connectOLD();
+            Statement statement = connection.createStatement();
+            int result = statement.executeUpdate(sql);
+            if (result == 1) {
+                System.out.println("you delete " + nick);
+            } else System.out.println("No Profile");
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public static void editTypeProfile(String nick, TypeProfil typeProfil) {
+        Connection connection = null;
+        try {
+            String sqlCheck = String.format("SELECT  * FROM users.user WHERE nick='%s'", nick);
+            String sql = String.format("UPDATE users.user SET typeprofile = '%s'  WHERE nick='%s'", typeProfil, nick);
+            connection = ConnectionManager.connectOLD();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sqlCheck);
+            System.out.println(sql);
+            if (resultSet.next()) {
+                statement.executeUpdate(sql);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+    }
+
+
 }

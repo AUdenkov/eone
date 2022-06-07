@@ -9,18 +9,21 @@ public class Result {
 
     public Result(Profile profile) {
         this.profile = profile;
-        if (profile.getTypeProfil()== TypeProfil.ADMIN){
+        if (profile.getTypeProfil() == TypeProfil.ADMIN) {
             goAdmin();
-        }
-        else goUser();
+        } else goUser();
     }
 
     public void goAdmin() {
-        System.out.println(profile);
-        Menu.menuAdmin();
-
+        if (!Menu.menuAdmin()) {
+            profile = null;
+            Menu.menuOne();
+        } else {
+            goAdmin();
+        }
     }
-    public void goUser(){
+
+    public void goUser() {
         System.out.println(profile);
         Menu.menuUser();
     }

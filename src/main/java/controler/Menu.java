@@ -4,8 +4,10 @@ import error.MyException;
 import model.Profile;
 import model.TypeProfil;
 import sorces.Connect;
+import sorces.Listed;
 import sorces.Result;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
@@ -29,26 +31,29 @@ public class Menu {
                 if (Connect.checkUser())
                     registration(TypeProfil.USER);
                 else {
+                    System.out.println("Вы создаёте 1 админа");
                     registration(TypeProfil.ADMIN);
                 }
             }
-            case 3 -> {
-                System.out.println(Connect.getSpisok());
-                menuOne();
-            }
+            default -> menuOne();
         }
     }
 
 
     public static void menuIn() {
-        System.out.println("Введите ник");
-        String nick = scannerIn.next();
-        check(nick);
-        System.out.println("Введите пороль");
-        String password = scannerIn.next();
-        check(password);
-        if (CheackProfile.cheackProfili(nick, password)) {
-            Result result = new Result(CheackProfile.getProfile());
+        if (!Connect.isEmpty()) {
+            System.out.println("Введите ник");
+            String nick = scannerIn.next();
+            check(nick);
+            System.out.println("Введите пороль");
+            String password = scannerIn.next();
+            check(password);
+            if (CheackProfile.cheackProfili(nick, password)) {
+                Result result = new Result(CheackProfile.getProfile());
+            } else menuOne();
+        } else {
+            System.out.println("У вас нету пользователей");
+            menuOne();
         }
     }
 
@@ -79,29 +84,41 @@ public class Menu {
 
     }
 
-    public static void menuAdmin() {
+    public static boolean menuAdmin() {
         System.out.println("1) Получить список");
         System.out.println("2) удалить пользователя");
         System.out.println("3) изменить права полтзователя");
+        System.out.println("4) выйти");
         int x = Integer.parseInt(scannerIn.next());
+
         switch (x) {
             case 1 -> {
-                Connect.getSpisok();
-                menuAdmin();
+                Connect.getSpisok().stream().forEach(System.out::println);
             }
             case 2 -> {
-//                Connect.deleteProfele();
-                menuAdmin();
+                System.out.println("Введите ник");
+                String nick = scannerIn.next();
+                Connect.deleteProfile(nick);
             }
             case 3 -> {
-//                Connect.changeTypeProfile();
-                menuAdmin();
+                System.out.println("Введите ник");
+                String nick = scannerIn.next();
+                TypeProfil typeProfil = answerTypeProfile(nick);
+                Connect.editTypeProfile(nick, typeProfil);
+            }
+            case 4 -> {
+                return false;
             }
         }
+        return true;
     }
 
     public static void menuUser() {
-        System.out.println("удалить пользователя");
+        System.out.println("1) удалить пользователя");
+        int x = scannerIn.nextInt();
+//        switch (x){
+//            case 1->
+//        }
 
     }
 
@@ -116,5 +133,19 @@ public class Menu {
             }
         }
 
+    }
+
+    private static TypeProfil answerTypeProfile(String nick) {
+        TypeProfil typeProfil = null;
+        System.out.println("Какой вы уровень доступа хотите дать пользователю " + nick);
+        System.out.println("1) ADMIN");
+        System.out.println("2) USER");
+        Scanner scanner = new Scanner(System.in);
+        int num = scanner.nextInt();
+        switch (num) {
+            case 1 -> typeProfil = TypeProfil.ADMIN;
+            case 2 -> typeProfil = TypeProfil.USER;
+        }
+        return typeProfil;
     }
 }
