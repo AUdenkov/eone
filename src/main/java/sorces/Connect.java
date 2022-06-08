@@ -103,18 +103,26 @@ public class Connect {
         return profile;
     }
 
-    public static boolean checkUser() {
+
+    public static Profile searchProfile(String nick) {
         Connection connection = null;
-        boolean cheack;
+        Profile profile = null;
         try {
-            String sql = "SELECT * FROM users.user WHERE typeprofile = 'ADMIN'";
+            String sql = String.format("SELECT * FROM users.user WHERE nick = '%s'", nick);
             connection = ConnectionManager.connectOLD();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
-            if (resultSet.next()) {
-                cheack = true;
-            } else {
-                cheack = false;
+            while (resultSet.next()) {
+                String firstName = resultSet.getString("firstname");
+                String lastName = resultSet.getString("lastname");
+                int age = resultSet.getInt("age");
+                String typeProfil = resultSet.getString("typeprofile");
+                String passwordDB = resultSet.getString("password");
+                if (typeProfil.equals("ADMIN")) {
+                    profile = new Profile(firstName, lastName, nick, age, TypeProfil.ADMIN, passwordDB);
+                } else
+                    profile = new Profile(firstName, lastName, nick, age, TypeProfil.USER, passwordDB);
+
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -125,7 +133,33 @@ public class Connect {
                 throw new RuntimeException(e);
             }
         }
-        return cheack;
+        if (profile == null) {
+            System.out.println("Данные не верны");
+        }
+        return profile;
+    }
+
+    public static int checkUser() {
+        Connection connection = null;
+        int result = 0;
+        try {
+            String sql = "SELECT * FROM users.user WHERE typeprofile = 'ADMIN'";
+            connection = ConnectionManager.connectOLD();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet = statement.executeQuery(sql);
+            if (resultSet.next()) {
+                result++;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result;
     }
 
     public static ArrayList<String> getSpisok() {
@@ -161,7 +195,6 @@ public class Connect {
         Connection connection = null;
         try {
             String sql = String.format("DELETE FROM users.user WHERE nick = '%s'", nick);
-            System.out.println(sql);
             connection = ConnectionManager.connectOLD();
             Statement statement = connection.createStatement();
             int result = statement.executeUpdate(sql);
@@ -187,7 +220,6 @@ public class Connect {
             connection = ConnectionManager.connectOLD();
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sqlCheck);
-            System.out.println(sql);
             if (resultSet.next()) {
                 statement.executeUpdate(sql);
             }
@@ -203,5 +235,27 @@ public class Connect {
 
     }
 
+
+    public static int countAdmin() {
+        Connection connection = null;
+        int result = 0;
+        try {
+            String sql = "SELECT COUNT(1) FROM users.user WHERE typeprofile = 'ADMIN'";
+            connection = ConnectionManager.connectOLD();
+            Statement statement = connection.createStatement();
+            ResultSet resultSet= statement.executeQuery(sql);
+            resultSet.next();
+            result = resultSet.getInt(1);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        return result;
+    }
 
 }

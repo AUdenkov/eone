@@ -3,11 +3,8 @@ package controler;
 import error.MyException;
 import model.Profile;
 import model.TypeProfil;
-import sorces.Connect;
-import sorces.Listed;
-import sorces.Result;
+import sorces.*;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Menu {
@@ -16,49 +13,30 @@ public class Menu {
 
     public Menu() {
         scannerIn = new Scanner(System.in);
-        menuOne();
+        ManagerProfile managerProfile=new ManagerProfile();
+        ManagerProfile.menuOneResult();
     }
 
-    public static void menuOne() {
+    public static int menuOne() {
         System.out.println("1) Войти");
         System.out.println("2) Регистрация");
-        int num = Integer.parseInt(scannerIn.next());
-        switch (num) {
-            case 1 -> {
-                menuIn();
-            }
-            case 2 -> {
-                if (Connect.checkUser())
-                    registration(TypeProfil.USER);
-                else {
-                    System.out.println("Вы создаёте 1 админа");
-                    registration(TypeProfil.ADMIN);
-                }
-            }
-            default -> menuOne();
-        }
+        return Integer.parseInt(scannerIn.next());
     }
 
 
-    public static void menuIn() {
-        if (!Connect.isEmpty()) {
-            System.out.println("Введите ник");
-            String nick = scannerIn.next();
-            check(nick);
-            System.out.println("Введите пороль");
-            String password = scannerIn.next();
-            check(password);
-            if (CheackProfile.cheackProfili(nick, password)) {
-                Result result = new Result(CheackProfile.getProfile());
-            } else menuOne();
-        } else {
-            System.out.println("У вас нету пользователей");
-            menuOne();
-        }
+    public static String[] menuIn() {
+        System.out.println("Введите ник");
+        String nick = scannerIn.next();
+        check(nick);
+        System.out.println("Введите пороль");
+        String password = scannerIn.next();
+        check(password);
+        String[] nickAndPassword = {nick, password};
+        return nickAndPassword;
     }
 
 
-    public static void registration(TypeProfil typeProfil) {
+    public static Object[] registration(TypeProfil typeProfil) {
         System.out.println("Введите имя");
         String firstName = scannerIn.next();
         check(firstName);
@@ -78,48 +56,22 @@ public class Menu {
         System.out.println("Введите пороль");
         String password = scannerIn.next();
         check(password);
-        Profile profile = new Profile(firstName, lastName, nick, age, typeProfil, password);
-        Connect.addProfileInDataBase(profile);
-        menuOne();
-
+        Object [] dateProfile={firstName,lastName,nick,age,typeProfil,password};
+        return dateProfile;
     }
 
-    public static boolean menuAdmin() {
+    public static int menuAdmin() {
         System.out.println("1) Получить список");
         System.out.println("2) удалить пользователя");
         System.out.println("3) изменить права полтзователя");
         System.out.println("4) выйти");
-        int x = Integer.parseInt(scannerIn.next());
-
-        switch (x) {
-            case 1 -> {
-                Connect.getSpisok().stream().forEach(System.out::println);
-            }
-            case 2 -> {
-                System.out.println("Введите ник");
-                String nick = scannerIn.next();
-                Connect.deleteProfile(nick);
-            }
-            case 3 -> {
-                System.out.println("Введите ник");
-                String nick = scannerIn.next();
-                TypeProfil typeProfil = answerTypeProfile(nick);
-                Connect.editTypeProfile(nick, typeProfil);
-            }
-            case 4 -> {
-                return false;
-            }
-        }
-        return true;
+        return Integer.parseInt(scannerIn.next());
     }
 
-    public static void menuUser() {
+    public static int menuUser() {
         System.out.println("1) удалить пользователя");
-        int x = scannerIn.nextInt();
-//        switch (x){
-//            case 1->
-//        }
-
+        System.out.println("2) выйти");
+        return scannerIn.nextInt();
     }
 
 
@@ -135,17 +87,12 @@ public class Menu {
 
     }
 
-    private static TypeProfil answerTypeProfile(String nick) {
-        TypeProfil typeProfil = null;
+    public static int answerTypeProfile(String nick) {
         System.out.println("Какой вы уровень доступа хотите дать пользователю " + nick);
         System.out.println("1) ADMIN");
         System.out.println("2) USER");
         Scanner scanner = new Scanner(System.in);
-        int num = scanner.nextInt();
-        switch (num) {
-            case 1 -> typeProfil = TypeProfil.ADMIN;
-            case 2 -> typeProfil = TypeProfil.USER;
-        }
-        return typeProfil;
+        return scanner.nextInt();
+
     }
 }

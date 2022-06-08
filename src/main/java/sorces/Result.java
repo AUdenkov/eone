@@ -9,22 +9,13 @@ public class Result {
 
     public Result(Profile profile) {
         this.profile = profile;
-        if (profile.getTypeProfil() == TypeProfil.ADMIN) {
-            goAdmin();
-        } else goUser();
     }
 
-    public void goAdmin() {
-        if (!Menu.menuAdmin()) {
-            profile = null;
-            Menu.menuOne();
-        } else {
-            goAdmin();
-        }
+    public Profile getProfile() {
+        return profile;
     }
 
-    public void goUser() {
-        System.out.println(profile);
-        Menu.menuUser();
+    public void setProfile(Profile profile) {
+        this.profile = profile;
     }
 }
